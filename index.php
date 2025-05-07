@@ -7,6 +7,27 @@ if (!isset($_SESSION['user_id']) && basename($_SERVER['PHP_SELF']) != 'login.php
     header('Location: login.php');
     exit();
 }
+
+// Ambil info user login
+$userInfo = null;
+if (isset($_SESSION['user_id'])) {
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+// Statistik
+$stmt = $pdo->query("SELECT COUNT(*) FROM pages");
+$pageCount = $stmt->fetchColumn();
+$stmt = $pdo->query("SELECT COUNT(*) FROM users");
+$userCount = $stmt->fetchColumn();
+
+// 5 halaman terbaru
+$stmt = $pdo->query("SELECT * FROM pages ORDER BY created_at DESC LIMIT 5");
+$recentPages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// 5 user terbaru
+$stmt = $pdo->query("SELECT * FROM users ORDER BY created_at DESC LIMIT 5");
+$recentUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -94,34 +115,70 @@ if (!isset($_SESSION['user_id']) && basename($_SERVER['PHP_SELF']) != 'login.php
         <!-- Main content -->
         <div class="content">
             <div class="container-fluid">
+                <!-- Info user login -->
+                <div class="alert alert-info">
+                    Selamat datang, <b><?php echo htmlspecialchars($userInfo['username']); ?></b>! Anda login sebagai admin.
+                </div>
                 <div class="row">
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-info">
                             <div class="inner">
-                                <?php
-                                $stmt = $pdo->query("SELECT COUNT(*) FROM pages");
-                                $pageCount = $stmt->fetchColumn();
-                                ?>
                                 <h3><?php echo $pageCount; ?></h3>
                                 <p>Total Pages</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-file"></i>
                             </div>
+                            <a href="pages.php" class="small-box-footer">Lihat Semua <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <?php
-                                $stmt = $pdo->query("SELECT COUNT(*) FROM users");
-                                $userCount = $stmt->fetchColumn();
-                                ?>
                                 <h3><?php echo $userCount; ?></h3>
                                 <p>Total Users</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-users"></i>
+                            </div>
+                            <a href="users.php" class="small-box-footer">Lihat Semua <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">5 Halaman Terbaru</div>
+                            <div class="card-body p-0">
+                                <ul class="list-group list-group-flush">
+                                    <?php foreach ($recentPages as $page): ?>
+                                        <li class="list-group-item">
+                                            <b><?php echo htmlspecialchars($page['title']); ?></b>
+                                            <span class="float-right text-muted" style="font-size:12px"><?php echo $page['created_at']; ?></span>
+                                        </li>
+                                    <?php endforeach; ?>
+                                    <?php if (count($recentPages) == 0): ?>
+                                        <li class="list-group-item text-center text-muted">Belum ada halaman.</li>
+                                    <?php endif; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-success text-white">5 User Terbaru</div>
+                            <div class="card-body p-0">
+                                <ul class="list-group list-group-flush">
+                                    <?php foreach ($recentUsers as $user): ?>
+                                        <li class="list-group-item">
+                                            <b><?php echo htmlspecialchars($user['username']); ?></b>
+                                            <span class="float-right text-muted" style="font-size:12px"><?php echo $user['created_at']; ?></span>
+                                        </li>
+                                    <?php endforeach; ?>
+                                    <?php if (count($recentUsers) == 0): ?>
+                                        <li class="list-group-item text-center text-muted">Belum ada user.</li>
+                                    <?php endif; ?>
+                                </ul>
                             </div>
                         </div>
                     </div>
