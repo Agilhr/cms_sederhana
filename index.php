@@ -42,6 +42,34 @@ $recentUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <style>
+        .main-header, .content-header, .card-header.bg-primary, .small-box.bg-info, .small-box.bg-success {
+            background: linear-gradient(90deg, #007bff 60%, #0056b3 100%) !important;
+            color: #fff !important;
+        }
+        .main-header .navbar-nav .nav-link, .main-header .navbar-nav .nav-link i {
+            color: #fff !important;
+        }
+        .small-box.bg-info, .small-box.bg-success {
+            background: linear-gradient(135deg, #007bff 60%, #00c6ff 100%) !important;
+            color: #fff !important;
+        }
+        .small-box .icon i {
+            color: #e3eaff !important;
+        }
+        .card-header.bg-primary {
+            background: #007bff !important;
+        }
+        .btn-primary {
+            background-color: #007bff !important;
+            border-color: #007bff !important;
+        }
+        .alert-info {
+            background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%) !important;
+            color: #fff !important;
+            border: none;
+        }
+    </style>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
